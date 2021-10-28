@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 
 
+croppedImagepath = "images/" + "crop1.jpeg"
 
 
 class DetectNumberPlate:
@@ -99,9 +100,38 @@ class DetectNumberPlate:
             use_normalized_coordinates=True,
             line_thickness=8)
 
-        cv2.imshow('images', image_np)
+        # cv2.imshow('images', image_np)
+        #
+        # cv2.waitKey(0)
+        image = cv2.imread(image_path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        cropped_image = self.get_bounding_box(image, output_dict['detection_boxes'], image_path)
+        return cropped_image
 
-        cv2.waitKey(0)
+    def get_bounding_box(self, image, boxes, image_path):
+        (H, W) = image.shape[:2]
+        k = 0
+        for plateBox in boxes:
+            # Draw the plate box rectangle in red
+            # scale the bounding box from the range [0, 1] to [W, H]
 
+            (startY, startX, endY, endX) = plateBox
+            startX = int(startX * W)
+            startY = int(startY * H)
+            endX = int(endX * W)
+            endY = int(endY * H)
+            k = k + 1
+
+            # croppedimage = crop(imagePath, (startX, startY, endX, endY), croppedImagepath)
+
+
+            image_obj = Image.open(image_path)
+
+            cropped_image = image_obj.crop((startX, startY, endX, endY))
+            cropped_image = cropped_image.convert("L")
+            # cropped_image = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
+            cropped_image.save(croppedImagepath)
+            cropped_image_cv = cv2.imread(croppedImagepath)
+            return cropped_image_cv
 
 
