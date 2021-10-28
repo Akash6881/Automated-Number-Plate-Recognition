@@ -5,7 +5,7 @@ from object_detection.utils import visualization_utils as vis_util
 from PIL import Image
 import cv2
 import numpy as np
-
+import easyocr
 
 croppedImagepath = "images/" + "crop1.jpeg"
 
@@ -24,7 +24,7 @@ class DetectNumberPlate:
             tf.import_graph_def(self.od_graph_def, name='')
 
         self.category_index = label_map_util.create_category_index_from_labelmap(self.path_to_label, use_display_name=True)
-
+        self.reader = easyocr.Reader(['en'])
         print("all set")
 
     def load_image_into_numpy_array(self, image):
@@ -106,7 +106,10 @@ class DetectNumberPlate:
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         cropped_image = self.get_bounding_box(image, output_dict['detection_boxes'], image_path)
-        return cropped_image
+        ocr_result = self.reader.readtext(cropped_image)
+        print(ocr_result[0][1])
+        text = ocr_result[0][1]
+        return cropped_image, text
 
     def get_bounding_box(self, image, boxes, image_path):
         (H, W) = image.shape[:2]

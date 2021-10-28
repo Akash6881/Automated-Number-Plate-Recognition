@@ -36,7 +36,7 @@ def predict():
 if __name__ == '__main__':
     name = "a"
     model_obj = model()
-    model_obj.predict_obj.predict(imagePath)
+    cropped_image, number_plate = model_obj.predict_obj.predict(imagePath)
 
     host = "127.0.0.1"
     port = 5000
