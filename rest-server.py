@@ -21,6 +21,12 @@ class model:
         print("Akash Das 22")
 
 
+def decodeImage(imgString, filename):
+    imgData = base64.b64decode(imgString)
+    with open(filename , 'wb') as f:
+        f.write(imgData)
+        f.close()
+
 @application.route("/", methods = ["GET"])
 @cross_origin()
 def home():
@@ -32,11 +38,19 @@ def home():
 def predict():
     inpImage = request.json["image"]
 
+    decodeImage(inpImage, imagePath)
+    cropped_image, number_plate = model_obj.predict_obj.predict(imagePath)
+    
+    return Response(number_plate)
+
+
+
+
 
 if __name__ == '__main__':
     name = "a"
     model_obj = model()
-    cropped_image, number_plate = model_obj.predict_obj.predict(imagePath)
+    #cropped_image, number_plate = model_obj.predict_obj.predict(imagePath)
 
     host = "127.0.0.1"
     port = 5000
