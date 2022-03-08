@@ -40,7 +40,7 @@ def predict():
 
     decodeImage(inpImage, imagePath)
     cropped_image, number_plate = model_obj.predict_obj.predict(imagePath)
-    
+
     return Response(number_plate)
 
 
